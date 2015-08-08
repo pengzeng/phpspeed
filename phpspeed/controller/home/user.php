@@ -10,7 +10,5 @@ class user {
     public function index(){
         $wecaht = new wechat();
         $wecaht->test();
-
-        echo CONTROLLER_NAME;
     }
 }

@@ -11,21 +11,16 @@
 
 class kernel {
 
-    static $_conf;
-
-
     public static function init(){
-        self::$_conf = require PATH.'/config/phpspeed.php';
         // register autoload function
         spl_autoload_register( 'Library\kernel::autoload' );
         // register error function
         register_shutdown_function('Library\kernel::fatalError');
         set_error_handler('Library\kernel::appError');
         set_exception_handler('Library\kernel::appException');
-        $route = require PATH.'/route'.FILES_SUFFIX;
+        $route = require PATH.'/route.php';
         $pathinfo = substr($_SERVER['PATH_INFO'], 1);
-
-        if( empty($pathinfo) || $pathinfo == '/' ) return template::view('index');
+        if(empty($pathinfo)) $pathinfo = '/';
         $pathinfo_key = false;
         foreach ($route as $k => $v) {
             if( preg_match('/^'.str_replace( '/', '\/', $k ).'/', $pathinfo) ){
@@ -33,27 +28,28 @@ class kernel {
             };
         }
 
-        if(!$pathinfo_key) return template::view('error');
-
         $route_value = $route[$pathinfo_key];
+        if(empty($route_value)) self::outerror(404);
         switch( gettype( $route_value ) ){
-            case 'string' : break;
+            case 'string' :
+                template::view( $route_value );
+                break;
             case 'object' :
-
                 $object = $route_value();
                 switch( gettype( $object ) ){
                     case 'string' :
-                        template::view( $object); break;
+                        template::view( $object );
+                        break;
                     case 'array'  :
-                        template::view( $object[0], $object[1]); break;
+                        template::view( $object[0], $object[1] ); break;
                     default :
-                        echo 'route error';
+                        self::outerror(404);
                 }
                 break;
             case 'array'  :
-                echo $route[$pathinfo]; break;
+                self::template(); break;
             default :
-                echo 'route error';
+                self::outerror(404);
         }
 
     }
@@ -74,6 +70,17 @@ class kernel {
 
     }
 
+    private static function template(){
+
+    }
+
+    private static function outerror( $code, $message = false){
+        if($message) json_encode($message);
+        switch($code){
+            case 404 : header('HTTP/1.0 404 Not Found'); break;
+        }
+
+    }
 
 }
 
