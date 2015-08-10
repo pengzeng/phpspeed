@@ -17,7 +17,9 @@ define( 'PATH', PHP_SPEED );
 define( 'PHPSPEED_VERSION', '1.0' );
 
 // define file path
+define( 'CONTROLLER_PATH', PATH.'/Controller/' );
 define( 'CONTROLLER_NAMESPACE', 'Controller' );
+define( 'APP_DEFAULT', 'index' );
 define( 'TEMPLATE_PATH', PATH.'/template/' );
 define( 'TEMPLATE_SUFFIX', '.php' );
 define( 'FILES_SUFFIX', '.php' );
