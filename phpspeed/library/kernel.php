@@ -17,12 +17,13 @@ class kernel {
         spl_autoload_register( 'Library\kernel::autoload' );
 
         // register error function
+        error_reporting(0);
         register_shutdown_function('Library\kernel::fatalError');
         set_error_handler('Library\kernel::appError');
         set_exception_handler('Library\kernel::appException');
 
         // 读取路由配置
-        $route = require PATH.'/route.php';
+        $route = require APP_PATH.'/route.php';
 
         // 读取pathinfo
         $pathinfo = substr($_SERVER['PATH_INFO'], 1);
@@ -41,7 +42,11 @@ class kernel {
             };
         }
 
-        if(empty($pathinfo_key)) self::outerror(404);
+        if(empty($pathinfo_key)) self::outerror(404, [
+            'message' => 'route not found',
+            'file'    => APP_PATH.'route'.FILES_SUFFIX,
+            'line'    => '0'
+        ]);
         $temp = explode( '/', $pathinfo );
         self::$route_map = ['action' => $temp[( count($temp) - 1 )]];
         self::route_resolve($route[$pathinfo_key]);
@@ -49,14 +54,16 @@ class kernel {
     }
 
     public static function autoload($class){
-        include PATH.'/'.$class.FILES_SUFFIX;
+        include APP_PATH.'/'.$class.FILES_SUFFIX;
     }
 
     public static function fatalError(){
+        $message = error_get_last();
+        $message['type'] && self::outerror(404, $message);
 
     }
 
-    public static function appError(){
+    public static function appError($errno, $errstr, $errfile, $errline){
 
     }
 
@@ -73,11 +80,11 @@ class kernel {
                 $count = count($temp);
                 if( isset(self::$route_map['action']) ){
                     self::$route_map['controller'] = $temp[$count-1];
-                    ($count > 1) && self::$route_map['group'] = ucwords($temp[$count-2]);
+                    ($count > 1) && self::$route_map['group'] = $temp[$count-2];
                 }else{
                     self::$route_map['action'] = $temp[$count-1];
                     ($count > 1) && self::$route_map['controller'] = $temp[$count-2];
-                    ($count > 2) && self::$route_map['group'] = ucwords($temp[$count-3]);
+                    ($count > 2) && self::$route_map['group'] = $temp[$count-3];
                 }
                 break;
             // route funciton
@@ -100,7 +107,11 @@ class kernel {
 
                     // return error
                     default :
-                        self::outerror(404);
+                        self::outerror( 404, [
+                            'message' => 'function route error',
+                            'file'    => APP_PATH.'route'.FILES_SUFFIX,
+                            'line'    => '0'
+                        ]);
                 }
                 break;
 
@@ -110,7 +121,11 @@ class kernel {
                 break;
             // route error
             default :
-                self::outerror(404);
+                self::outerror( 404, [
+                    'message' => 'route define error',
+                    'file'    => APP_PATH.'route'.FILES_SUFFIX,
+                    'line'    => '0'
+                ]);
         }
         self::template();
     }
@@ -124,13 +139,9 @@ class kernel {
         if(self::$route_map['request']){
             // header request: post get put delete patch options head other ...
         } else {
-            //尝试加载默认模板文件
-            if( ! defined('CONTROLLER_NAME') ){
-                template::view(APP_DEFAULT);return;
-            }
 
             $_namespace = CONTROLLER_NAMESPACE;
-            if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
+            if(defined('GROUP_NAME')) $_namespace.='\\'.ucwords(GROUP_NAME).'\\'.CONTROLLER_NAME;
             else $_namespace.='\\'.CONTROLLER_NAME;
             $objects = new $_namespace;
             $action  = ACTION_NAME;
@@ -138,14 +149,15 @@ class kernel {
         }
     }
 
-    private static function outerror( $code, $message = false){
-        if($message) json_encode($message);
+    public static function outerror( $code, $message = false){
         switch($code){
             case 404 : header('HTTP/1.0 404 Not Found'); break;
         }
+        if(APP_DEBUG) template::view('error/404', $message);
+        else template::view('error/error');
         exit;
     }
 
 }
 
-require PATH.'/function/func.php';
+require APP_PATH.'/function/func.php';

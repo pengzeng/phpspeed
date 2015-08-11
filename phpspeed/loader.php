@@ -11,22 +11,30 @@
 
 
 
-// define phpspeed
+// dir
 define( 'PHP_SPEED', __DIR__ );
-define( 'PATH', PHP_SPEED );
-define( 'PHPSPEED_VERSION', '1.0' );
+// phpspeed path
+define( 'APP_PATH', PHP_SPEED );
+// start debug
+define( 'APP_DEBUG', true );
 
-// define file path
-define( 'CONTROLLER_PATH', PATH.'/Controller/' );
+// phpspeed version
+const PHPSPEED_VERSION = '1.0.0';
+
+// controller path
+define( 'CONTROLLER_PATH', APP_PATH.'/Controller' );
+// controller namespace name
 define( 'CONTROLLER_NAMESPACE', 'Controller' );
-define( 'APP_DEFAULT', 'index' );
-define( 'TEMPLATE_PATH', PATH.'/template/' );
+// template files path
+define( 'TEMPLATE_PATH', APP_PATH.'/template' );
+// template files suffix
 define( 'TEMPLATE_SUFFIX', '.php' );
+// files suffix
 define( 'FILES_SUFFIX', '.php' );
 
 
 
-
-require PATH.'/library/kernel.php';
-
+// include kernel
+require APP_PATH.'/library/kernel'.FILES_SUFFIX;
+// start phpspeed
 Library\kernel::init();

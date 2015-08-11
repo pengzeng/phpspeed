@@ -10,5 +10,6 @@ class user {
     public function index(){
         $wecaht = new wechat();
         $wecaht->test();
+        var_dump(config('mysql'));
     }
 }

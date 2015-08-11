@@ -8,8 +8,9 @@
 |--------------------------------------------------------------------------------------
 */
 return [
-    '/home/user/.*' => function(){return ['home/user','sdfsdf234234234'];},
-//    '/home/user/index' => 'home/user/index',
+//    '/home/user/.*' => function(){return ['home/user','sdfsdf234234234'];},
+    '/home/user/.*' => 'home/user',
+    '/home/index/.*' => 'home/index',
 //    '/home/user/index' => [],
-    '/' => '',
+    '/' => function(){return 'index';},
 ];
