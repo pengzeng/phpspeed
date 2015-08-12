@@ -13,13 +13,13 @@ class user {
 
     }
     public function index(){
-        $list = $this->_mysql()->query("show tables");
+        /*$list = $this->_mysql()->query("show tables");
         foreach ($list as $v) {
             echo '<pre>';
             var_dump($v);
         }
         var_dump($this->_redis()->set('test', microtime(), 300));
-        var_dump($this->_redis()->get('test'));
+        var_dump($this->_redis()->get('test'));*/
         template::view('', microtime() );
     }
 }

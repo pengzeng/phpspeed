@@ -21,7 +21,7 @@ trait redis {
                 $conf['auth'] && $instance->auth($conf['auth']);
                 self::$_redis = $instance;
             }catch ( RedisException $e){
-                \Library\template::view(ERROR_DEBUG, [
+                \Library\exception::outerror(404, [
                     'message' => $e->getMessage(),
                     'file'    => $e->getFile(),
                     'line'    => $e->getLine()

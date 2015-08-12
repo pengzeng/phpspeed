@@ -19,6 +19,13 @@ const PHPSPEED_VERSION = '1.0.0';
 const ERROR_DEBUG      = 'error/404';
 // error page  : template/error/error.php
 const ERROR_PAGE       = 'error/error';
+// template files suffix
+const TEMPLATE_SUFFIX = '.php';
+// files suffix
+const FILES_SUFFIX    = '.php';
+// files suffix
+const CACHE_SUFFIX    = '.php';
+
 
 // start debug
 define( 'APP_DEBUG', true );
@@ -35,14 +42,11 @@ define( 'TEMPLATE_PATH', APP_PATH.'/template' );
 // cache path
 define( 'RUNTIME_PATH', APP_PATH.'/runtime/cache' );
 // logs path
-define( 'LOGS_PATH', APP_PATH.'/runtime/log' );
+define( 'LOGS_PATH', APP_PATH.'/runtime/logs' );
 // controller namespace name
 define( 'CONTROLLER_NAMESPACE', 'Controller' );
 
-// template files suffix
-define( 'TEMPLATE_SUFFIX', '.php' );
-// files suffix
-define( 'FILES_SUFFIX', '.php' );
+
 
 
 

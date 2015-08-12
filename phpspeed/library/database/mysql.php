@@ -28,7 +28,7 @@ trait mysql {
                     $conf['user'],
                     $conf['pass']);
             }catch (PDOException $e){
-                \Library\template::view(ERROR_DEBUG, [
+                \Library\exception::outerror(404, [
                     'message' => $e->getMessage(),
                     'file'    => $e->getFile(),
                     'line'    => $e->getLine()

@@ -42,7 +42,7 @@ class kernel {
             };
         }
 
-        if(empty($pathinfo_key)) self::outerror(404, [
+        if(empty($pathinfo_key)) exception::outerror(404, [
             'message' => 'route not found',
             'file'    => APP_PATH.'route'.FILES_SUFFIX,
             'line'    => '0'
@@ -59,7 +59,7 @@ class kernel {
 
     public static function fatalError(){
         $message = error_get_last();
-        $message['type'] && self::outerror(404, $message);
+        $message['type'] && exception::outerror(404, $message);
 
     }
 
@@ -107,7 +107,7 @@ class kernel {
 
                     // return error
                     default :
-                        self::outerror( 404, [
+                        exception::outerror( 404, [
                             'message' => 'function route error',
                             'file'    => APP_PATH.'route'.FILES_SUFFIX,
                             'line'    => '0'
@@ -121,7 +121,7 @@ class kernel {
                 break;
             // route error
             default :
-                self::outerror( 404, [
+                exception::outerror( 404, [
                     'message' => 'route define error',
                     'file'    => APP_PATH.'route'.FILES_SUFFIX,
                     'line'    => '0'
@@ -149,14 +149,7 @@ class kernel {
         }
     }
 
-    public static function outerror( $code, $message = false){
-        switch($code){
-            case 404 : header('HTTP/1.0 404 Not Found'); break;
-        }
-        if(APP_DEBUG) template::view(ERROR_DEBUG, $message);
-        else template::view(ERROR_PAGE);
-        exit;
-    }
+
 
 }
 
