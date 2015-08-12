@@ -40,8 +40,7 @@ class template {
         $fname = $dir.'/'.md5($path).CACHE_SUFFIX;
 
         if(file_exists($fname)){
-            if( ! APP_DEBUG ) return $fname;
-            self::replace($fname, TEMPLATE_PATH.$path);
+            APP_DEBUG && self::replace($fname, TEMPLATE_PATH.$path);
         } else self::replace($fname, TEMPLATE_PATH.$path);
         return $fname;
     }
