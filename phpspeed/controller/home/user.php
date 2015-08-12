@@ -1,12 +1,9 @@
 <?php namespace Controller\Home;
 
-<<<<<<< HEAD
-use Extend\wechat;
-=======
+
 use Library\database\mysql,
     Library\database\redis,
     Library\template;
->>>>>>> 7f0812b6ce08e161890688810a63c414accb27f7
 
 class user {
     use mysql,redis {
