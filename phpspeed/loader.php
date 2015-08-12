@@ -20,11 +20,11 @@ const ERROR_DEBUG      = 'error/404';
 // error page  : template/error/error.php
 const ERROR_PAGE       = 'error/error';
 // template files suffix
-const TEMPLATE_SUFFIX = '.php';
+const TEMPLATE_SUFFIX  = '.php';
 // files suffix
-const FILES_SUFFIX    = '.php';
+const FILES_SUFFIX     = '.php';
 // files suffix
-const CACHE_SUFFIX    = '.php';
+const CACHE_SUFFIX     = '.php';
 
 
 // start debug
