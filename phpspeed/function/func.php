@@ -1,7 +1,7 @@
 <?php
 /*
 |----------------------------------------------------------
-| phpspeed 内置函数库
+| phpspeed 公共函数库
 |----------------------------------------------------------
 */
 
@@ -11,5 +11,5 @@
 */
 function config( $name ){
     if( ! is_string($name) ) return $name;
-    return require PATH.'/config/'.$name.'.php';
+    return require CONFIG_PATH.$name.FILES_SUFFIX;
 }

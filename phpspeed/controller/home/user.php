@@ -1,15 +1,25 @@
 <?php namespace Controller\Home;
 
-use Extend\wechat;
-use Library\kernel;
+use Library\database\mysql,
+    Library\database\redis,
+    Library\template;
 
 class user {
+    use mysql,redis {
+        _mysql_connection   as _mysql;
+        _redis_connection   as _redis;
+    }
     public function __construct(){
-//        var_dump(config('mysql'));
+
     }
     public function index(){
-        $wecaht = new wechat();
-        $wecaht->test();
-        var_dump(config('mysql'));
+        $list = $this->_mysql()->query("show tables");
+        foreach ($list as $v) {
+            echo '<pre>';
+            var_dump($v);
+        }
+        var_dump($this->_redis()->set('test', microtime(), 300));
+        var_dump($this->_redis()->get('test'));
+        template::view('', microtime() );
     }
 }

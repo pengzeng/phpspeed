@@ -1,7 +1,7 @@
 <?php namespace Library;
 
 class template {
-    public static function view( $view = '', $_template_ = false){
+    public static function view( $_template_ = false, $view = ''){
         extract($view);
         if($_template_){
             $_template_ = TEMPLATE_PATH.'/'.$_template_.TEMPLATE_SUFFIX;
@@ -12,7 +12,7 @@ class template {
             (defined('ACTION_NAME')) && $_template_.='/'.ACTION_NAME;
             $_template_.=TEMPLATE_SUFFIX;
         }
-        if(is_file($_template_)) return require $_template_;
+        if(is_file($_template_)) require self::runtime( $_template_ );
         else {
             header('HTTP/1.0 404 Not Found');
             APP_DEBUG && extract([
@@ -21,9 +21,13 @@ class template {
                 'line'    => 0
             ]);
             $error_page = TEMPLATE_PATH;
-            $error_page.= APP_DEBUG ? '/error/404' : '/error/error';
+            $error_page.= APP_DEBUG ? '/'.ERROR_DEBUG : '/'.ERROR_PAGE;
             $error_page.= TEMPLATE_SUFFIX;
-           return require $error_page;
+            return require $error_page;
         }
+    }
+
+    public static function runtime( $name ){
+        return $name;
     }
 }

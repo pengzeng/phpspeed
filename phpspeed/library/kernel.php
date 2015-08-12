@@ -153,8 +153,8 @@ class kernel {
         switch($code){
             case 404 : header('HTTP/1.0 404 Not Found'); break;
         }
-        if(APP_DEBUG) template::view('error/404', $message);
-        else template::view('error/error');
+        if(APP_DEBUG) template::view(ERROR_DEBUG, $message);
+        else template::view(ERROR_PAGE);
         exit;
     }
 
