@@ -1,4 +1,4 @@
 .idea
 push
-# phpspeed/runtime/cache
-# phpspeed/runtime/logs
+phpspeed/runtime/cache
+phpspeed/runtime/logs
