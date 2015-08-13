@@ -47,9 +47,37 @@ class template {
 
     public static function replace($fname, $path){
         $txt  = file_get_contents($path);
-        if( ! empty($txt) ){
-
+        if(empty($txt) ){
+            file_put_contents($fname ,$txt);return;
         }
-        file_put_contents($fname ,$txt);
+        // 模板正则
+        $pattern = [
+            '/<\{(.*)\}>/Us',          # 输出
+            '/{:\$(.*)}/Us',           # 定义变量
+            '/@end/Us',                # 带 if for foreach ... 语法结束
+            '/@foreach\((.*)\)/Us',    # foreach start
+            '/@if\((.*)\)/Us',         # if start
+            '/@elseif\((.*)\)/Us',     # elseif start
+            '/@switch\((.*)\)/Us',     # switch start
+            '/@case(.*):/Us',          # switch case
+            '/@default(.*):/Us',       # switch start
+            '/@ecase/Us',            # switch start
+            '/@for\((.*)\)/Us',        # for start
+        ];
+        $replace = [
+            '<?php echo \\1;?>',
+            '<?php $\\1;?>',
+            '<?php }?>',
+            '<?php foreach(\\1){?>',
+            '<?php if(\\1){?>',
+            '<?php }elseif(\\1){?>',
+            '<?php switch(\\1){?>',
+            '<?php case \\1 :?>',
+            '<?php default \\1 :?>',
+            '<?php break;?>',
+            '<?php for(\\1){?>',
+        ];
+        $txt = preg_replace($pattern, $replace, $txt);
+        file_put_contents($fname ,$txt);return;
     }
 }
