@@ -51,6 +51,6 @@ define( 'CONTROLLER_NAMESPACE', 'Controller' );
 
 
 // include kernel
-require APP_PATH.'/library/kernel'.FILES_SUFFIX;
+require_once APP_PATH.'/library/kernel'.FILES_SUFFIX;
 // start phpspeed
 Library\kernel::init();

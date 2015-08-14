@@ -1,4 +1,6 @@
-<p>welcome group home/user/index ! </p>
+
+
+@include('public/header')
 
 @foreach($data as $k => $v)
 <p><{$v}></p>
@@ -12,8 +14,8 @@
 
 
 @switch($aa)
-@case '1' : <p>9527</p> @ecase
-@case '2' : <p>9527</p> @ecase
+@case '1' : <p>9527</p> @break
+@case '2' : <p>9527</p> @break
 @default  : <p>9527</p>
 @end
 
@@ -22,7 +24,9 @@
 <p><{$i}></p>
 @end
 
-{:$aa='1'}
 
-<{$v}>
+{@aa='1'}
+
+<p><{$aa}></p>
+
 <{date('Y-m-d',time())}>

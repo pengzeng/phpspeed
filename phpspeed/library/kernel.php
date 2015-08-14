@@ -153,4 +153,4 @@ class kernel {
 
 }
 
-require APP_PATH.'/function/func.php';
+require_once APP_PATH.'/function/func.php';

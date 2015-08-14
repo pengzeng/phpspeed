@@ -12,18 +12,26 @@ class template {
             (defined('ACTION_NAME')) && $_template_.='/'.ACTION_NAME;
             $_template_.=TEMPLATE_SUFFIX;
         }
-        if(is_file(TEMPLATE_PATH.$_template_))
-            require self::runtime( $_template_ );
-        else {
-            exception::outerror(404, [
-                'message' => 'template not found',
-                'file'    => $_template_,
-                'line'    => 0
-            ]);
-        }
+        include self::runtime( $_template_ );
     }
 
     public static function runtime( $path ){
+        if( ! is_file(TEMPLATE_PATH.$path)) {
+            exception::outerror(404, [
+                'message' => 'template not found',
+                'file'    => $path,
+                'line'    => 0
+            ]);
+        }
+
+        $fname = self::cache_file_name($path);
+
+        if(file_exists($fname)){
+            APP_DEBUG && self::replace($fname, TEMPLATE_PATH.$path);
+        } else self::replace($fname, TEMPLATE_PATH.$path);
+        return $fname;
+    }
+    public static function cache_file_name($path){
         $temp = explode('/', $path);
         unset($temp[count($temp)-1],$temp[0]);
         $dir = RUNTIME_PATH;
@@ -37,23 +45,17 @@ class template {
             'file'    => $dir,
             'line'    => 0
         ]);
-        $fname = $dir.'/'.md5($path).CACHE_SUFFIX;
-
-        if(file_exists($fname)){
-            APP_DEBUG && self::replace($fname, TEMPLATE_PATH.$path);
-        } else self::replace($fname, TEMPLATE_PATH.$path);
-        return $fname;
+        return $dir.'/'.md5($path).CACHE_SUFFIX;
     }
-
     public static function replace($fname, $path){
         $txt  = file_get_contents($path);
         if(empty($txt) ){
             file_put_contents($fname ,$txt);return;
         }
-        // 模板正则
+        // template regular
         $pattern = [
             '/<\{(.*)\}>/Us',          # 输出
-            '/{:\$(.*)}/Us',           # 定义变量
+            '/{@(.*)}/Us',             # 定义变量
             '/@end/Us',                # 带 if for foreach ... 语法结束
             '/@foreach\((.*)\)/Us',    # foreach start
             '/@if\((.*)\)/Us',         # if start
@@ -61,9 +63,10 @@ class template {
             '/@switch\((.*)\)/Us',     # switch start
             '/@case(.*):/Us',          # switch case
             '/@default(.*):/Us',       # switch start
-            '/@ecase/Us',            # switch start
+            '/@break/Us',              # switch start
             '/@for\((.*)\)/Us',        # for start
         ];
+        // replace str
         $replace = [
             '<?php echo \\1;?>',
             '<?php $\\1;?>',
@@ -77,7 +80,19 @@ class template {
             '<?php break;?>',
             '<?php for(\\1){?>',
         ];
+        // recursive of son template
+        $inc_pattern = '/@include\([\'|"](.*)[\'|"]\)/Us';
+        preg_match_all($inc_pattern, $txt, $inc);
+        $inc_replace = [];
+        foreach ($inc[1] as $k => $v) {
+            $inc_replace[] = '<?php include "'.
+                self::runtime( '/'.$v.TEMPLATE_SUFFIX ).
+                '";?>';
+        }
+        // replace and write cache
+        if(!(empty($inc[0])))
+            $txt = str_replace($inc[0], $inc_replace, $txt);
         $txt = preg_replace($pattern, $replace, $txt);
-        file_put_contents($fname ,$txt);return;
+        file_put_contents($fname ,$txt);
     }
 }
