@@ -22,19 +22,19 @@ class kernel {
         set_error_handler('Library\kernel::appError');
         set_exception_handler('Library\kernel::appException');
 
-        // 读取路由配置
+        // read route file
         $route = require APP_PATH.'/route.php';
 
-        // 读取pathinfo
+        // read pathinfo
         $pathinfo = substr($_SERVER['PATH_INFO'], 1);
         if(empty($pathinfo)) $pathinfo = '/';
 
-        // 尝试直接取路由配置
+        // get route value
         if($route[$pathinfo]){
             self::route_resolve( $route[$pathinfo] ); return;
         }
 
-        // 尝试用正则查找路由配置
+        // preg get route value
         $pathinfo_key = false;
         foreach ($route as $k => $v) {
             if( preg_match('/^'.str_replace( '/', '\/', $k ).'/', $pathinfo) ){

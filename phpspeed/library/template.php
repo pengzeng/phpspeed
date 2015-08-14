@@ -54,9 +54,10 @@ class template {
         }
         // template regular
         $pattern = [
-            '/<\{(.*)\}>/Us',          # 输出
-            '/{@(.*)}/Us',             # 定义变量
-            '/@end/Us',                # 带 if for foreach ... 语法结束
+            '/<\{(.*)\}>/Us',          # output
+            '/{@(.*)}/Us',             # define variable
+            '/{:(.*)}/Us',             # use function
+            '/@end/Us',                # if for foreach ... end
             '/@foreach\((.*)\)/Us',    # foreach start
             '/@if\((.*)\)/Us',         # if start
             '/@elseif\((.*)\)/Us',     # elseif start
@@ -70,6 +71,7 @@ class template {
         $replace = [
             '<?php echo \\1;?>',
             '<?php $\\1;?>',
+            '<?php \\1;?>',
             '<?php }?>',
             '<?php foreach(\\1){?>',
             '<?php if(\\1){?>',
