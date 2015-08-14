@@ -1,5 +1,9 @@
-## phpspeed
-phpspeed framework alpha version
+## phpspeed framework Alpha version 1.0
+
+```php
+    nginx rewrite: rewrite ^(.*)$ /index.php/$1 last; #pathinfo
+    PHP: 5.5.x
+```
 
 ## 目录结构
 ```php
