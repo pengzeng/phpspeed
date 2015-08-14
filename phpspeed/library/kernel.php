@@ -37,6 +37,7 @@ class kernel {
         // preg get route value
         $pathinfo_key = false;
         foreach ($route as $k => $v) {
+            if( ! ($k == '/') )
             if( preg_match('/^'.str_replace( '/', '\/', $k ).'/', $pathinfo) ){
                 $pathinfo_key = $k;break;
             };
@@ -49,6 +50,7 @@ class kernel {
         ]);
         $temp = explode( '/', $pathinfo );
         self::$route_map = ['action' => $temp[( count($temp) - 1 )]];
+
         self::route_resolve($route[$pathinfo_key]);
 
     }
@@ -72,7 +74,6 @@ class kernel {
     }
 
     public static function route_resolve( $value ){
-        $map = array();
         switch( gettype( $value ) ){
             // route string
             case 'string' :
@@ -96,7 +97,8 @@ class kernel {
                     case 'string' :
                         $tname = empty(self::$route_map['action']) ?
                             $object : $object.'/'.self::$route_map['action'];
-                        template::view( $tname ); exit;
+                        template::view( $tname );
+                        exit;
 
                     // return temlate + data
                     case 'array'  :
@@ -140,6 +142,9 @@ class kernel {
             // header request: post get put delete patch options head other ...
         } else {
 
+            if(!defined('CONTROLLER_NAME')){
+                return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
+            }
             $_namespace = CONTROLLER_NAMESPACE;
             if(defined('GROUP_NAME')) $_namespace.='\\'.ucwords(GROUP_NAME).'\\'.CONTROLLER_NAME;
             else $_namespace.='\\'.CONTROLLER_NAME;

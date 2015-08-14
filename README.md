@@ -1,6 +1,25 @@
 ## phpspeed
 phpspeed framework alpha version
 
+## 路由配置 phpspeed/route.php
+```php
+return [
+    // 直接返回模板
+    '/' => function(){return 'index';},
+    '/home/user/info' => function(){
+        return [
+            'info',['username' => 'bruce']
+        ];
+    },
+
+    // 基本路由配置
+    '/home/user/.*'    => 'home/user',
+    '/home/item/.*'    => 'home/item',
+    '/home/list/index' => 'home/list/index',
+    '/test'            => 'test',    // 解析到 controller 下test文件
+];
+```
+
 ## 加载子模板
 ```php
 @include('public/header')
