@@ -1,7 +1,22 @@
 ## phpspeed
 phpspeed framework alpha version
 
-## 路由配置 phpspeed/route.php
+## 目录结构
+```php
+/phpspeed/                  # 框架入口
+         config/            # 配置文件
+         controller/        # 控制器目录
+         extend/            # 扩展目录
+         function/func.php  # 函数库
+         library/           # 核心目录
+         module/            # 模型
+         runtime/           # 编译缓存与日志目录
+         template/          # 模板目录
+/public/                     # 网站根目录 index.php images js css uploads
+
+```
+
+## 路由配置
 ```php
 return [
     // 直接返回模板
