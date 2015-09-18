@@ -1,7 +1,7 @@
 <?php namespace Library;
 
 class template {
-    public static function view( $_template_ = false, $view = ''){
+    public static function view( $view = '', $_template_ = false){
         extract($view);
         if($_template_){
             $_template_ = '/'.$_template_.TEMPLATE_SUFFIX;
@@ -61,6 +61,7 @@ class template {
             '/@foreach\((.*)\)/Us',    # foreach start
             '/@if\((.*)\)/Us',         # if start
             '/@elseif\((.*)\)/Us',     # elseif start
+            '/@else/Us',               # else
             '/@switch\((.*)\)/Us',     # switch start
             '/@case(.*):/Us',          # switch case
             '/@default(.*):/Us',       # switch start
@@ -76,6 +77,7 @@ class template {
             '<?php foreach(\\1){?>',
             '<?php if(\\1){?>',
             '<?php }elseif(\\1){?>',
+            '<?php }else{?>',
             '<?php switch(\\1){?>',
             '<?php case \\1 :?>',
             '<?php default \\1 :?>',

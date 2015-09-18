@@ -8,9 +8,8 @@ return [
     'type'    => 'mysql',
     'host'    => '127.0.0.1',
     'port'    => '3306',
-    'user'    => 'root',
-    'pass'    => '123456',
-    'name'    => 'mysql',
-    'charset' => 'utf8',
-    'prefix'  => '',          //table prefix
+    'user'    => 'wishbid',
+    'pass'    => 'wishbid^&*(',
+    'name'    => 'wishbid',
+    'charset' => 'utf8'
 ];

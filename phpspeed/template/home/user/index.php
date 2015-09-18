@@ -38,3 +38,5 @@
 <p><{$aa}></p>
 <{date('Y-m-d',time())}>
 <{$check ? 'true' : 'false'}>
+
+<{$view}>

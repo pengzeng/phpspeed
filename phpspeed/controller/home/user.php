@@ -1,26 +1,24 @@
 <?php namespace Controller\Home;
 
 
-use Library\database\mysql,
-    Library\database\redis,
-    Library\template;
+use Library\template,
+    Library\DB;
 
 class user {
-    use mysql,redis {
-        _mysql_connection   as _mysql;
-        _redis_connection   as _redis;
-    }
+
     public function __construct(){
 
     }
     public function index(){
-        /*$list = $this->_mysql()->query("show tables");
-        foreach ($list as $v) {
-            echo '<pre>';
-            var_dump($v);
-        }
-        var_dump($this->_redis()->set('test', microtime(), 300));
-        var_dump($this->_redis()->get('test'));*/
-        template::view('', microtime() );
+
+//        $list = mysql::query("select * from ele_user")->fetchAll(\PDO::FETCH_CLASS);
+//        echo "<pre>";
+//        var_dump($list);
+//        var_dump($this->_redis()->set('test', microtime(), 300));
+//        var_dump($this->_redis()->get('test'));
+        $list = DB::table('user_login')->select();
+        echo '<pre>';
+        var_dump($list);
+        template::view( microtime() );
     }
 }

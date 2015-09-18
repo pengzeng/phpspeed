@@ -31,7 +31,7 @@ class kernel {
 
         // get route value
         if($route[$pathinfo]){
-            self::route_resolve( $route[$pathinfo] ); return;
+            static::route_resolve( $route[$pathinfo] ); return;
         }
 
         // preg get route value
@@ -51,12 +51,12 @@ class kernel {
         $temp = explode( '/', $pathinfo );
         self::$route_map = ['action' => $temp[( count($temp) - 1 )]];
 
-        self::route_resolve($route[$pathinfo_key]);
+        static::route_resolve($route[$pathinfo_key]);
 
     }
 
     public static function autoload($class){
-        include APP_PATH.'/'.$class.FILES_SUFFIX;
+        require APP_PATH.'/'.$class.FILES_SUFFIX;
     }
 
     public static function fatalError(){
@@ -79,7 +79,7 @@ class kernel {
             case 'string' :
                 $temp  = explode( '/', $value );
                 $count = count($temp);
-                if( isset(self::$route_map['action']) ){
+                if( isset(static::$route_map['action']) ){
                     self::$route_map['controller'] = $temp[$count-1];
                     ($count > 1) && self::$route_map['group'] = $temp[$count-2];
                 }else{
@@ -95,15 +95,15 @@ class kernel {
 
                     // return template
                     case 'string' :
-                        $tname = empty(self::$route_map['action']) ?
-                            $object : $object.'/'.self::$route_map['action'];
+                        $tname = empty(static::$route_map['action']) ?
+                            $object : $object.'/'.static::$route_map['action'];
                         template::view( $tname );
                         exit;
 
                     // return temlate + data
                     case 'array'  :
-                        $tname = empty(self::$route_map['action']) ?
-                            $object[0] : $object[0].'/'.self::$route_map['action'];
+                        $tname = empty(static::$route_map['action']) ?
+                            $object[0] : $object[0].'/'.static::$route_map['action'];
                         template::view( $tname, $object[1] );
                         exit;
 
@@ -143,7 +143,7 @@ class kernel {
         } else {
 
             if(!defined('CONTROLLER_NAME')){
-                return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
+                return require CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
             }
             $_namespace = CONTROLLER_NAMESPACE;
             if(defined('GROUP_NAME')) $_namespace.='\\'.ucwords(GROUP_NAME).'\\'.CONTROLLER_NAME;

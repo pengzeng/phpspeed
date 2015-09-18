@@ -10,7 +10,7 @@
 return [
 
     // 直接返回模板
-    '/' => function(){return 'index';},
+    '/' => 'home/user/index',
     '/home/user/info' => function(){
         return [
             'info',['username' => 'bruce']

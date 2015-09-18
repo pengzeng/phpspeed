@@ -1,14 +1,18 @@
 <?php namespace Library\database;
 
+/*
+|------------------------------------------------------------------------------
+| mysql driver
+|------------------------------------------------------------------------------
+*/
 
 use PDO,PDOException,PDOStatement;
 
-trait mysql {
+trait pdodriver {
 
-    private static $_mysql = null;
-    private static $_prefix    = '';
-    private function _mysql_connection(){
-        if( ! self::$_mysql instanceof PDO){
+    private function _connect(){
+        static $pdo;
+        if( ! $pdo instanceof PDO){
             $conf = config('mysql') + [
                     'type'    => 'mysql',
                     'host'    => '127.0.0.1',
@@ -16,12 +20,10 @@ trait mysql {
                     'user'    => 'root',
                     'pass'    => '',
                     'name'    => 'test',
-                    'charset' => 'utf8',
-                    'prefix'  => ''
+                    'charset' => 'utf8'
                 ];
-            self::$_prefix = $conf['prefix'];
             try{
-                self::$_mysql = new PDO(
+                $pdo = new PDO(
                     sprintf("%s:host=%s;prot=%s;dbname=%s;charset=%s",
                         $conf['type'],$conf['host'],$conf['port'],
                         $conf['name'],$conf['charset']),
@@ -36,6 +38,241 @@ trait mysql {
             }
 
         }
-        return self::$_mysql;
+        return $pdo;
     }
+
+    private function _query( $sql ){
+        return $this->_connect()->query($sql);
+    }
+}
+
+class mysql{
+    use pdodriver;
+    private $prefix = '';
+    private $param  = [];
+    private $sql    = '';
+    public  $table  = '';
+    private $base   = [
+        'field' => false,
+        'where' => false,
+        'group' => false,
+        'order' => false,
+        'limit' => false,
+    ];
+    private $limit  = 10000;
+    private $config = [];
+    public function __construct( $tname = '' ){
+        $this->table = $tname;
+    }
+
+    /**
+     * 添加
+     * @param
+     * @return
+     */
+    function add($d){
+        $sql = 'INSERT INTO '.$this->table;
+        $field = '';
+        $value = '';
+        foreach($d as $k => $v) {
+            if (empty($field)) {
+                $field = '`'.$k.'`';
+                $value = '\''.$v.'\'';
+            }else {
+                $field .= ',`'.$k.'`';
+                $value .= ',\''.$v.'\'';
+            }
+        }
+        $sql.=' ('.$field.')'.' VALUES('.$value.')';
+        return $this->excute($sql);
+    } // end func
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function group($d){
+        if(!$d) return $this;
+        $this->param['group'] = $d;
+        return $this;
+    } // end func
+    /**
+     *
+     * @param
+     * @return
+     */
+    function order($d){
+        if(!$d) return $this;
+        $this->param['order'] = $d;
+        return $this;
+    } // end func
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function field($d){
+        if(!$d) return $this;
+        $this->param['field'] = $d;
+        return $this;
+    } // end func
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function limit($d){
+        if(!$d) return $this;
+        $this->param['limit'] = $d;
+        return $this;
+    } // end func
+    /**
+     *
+     * @param
+     * @return
+     */
+    function where($d){
+        $s = '';
+        if( ! ( is_string($d) || is_array($d) ) ){
+            return $this;
+        }
+        if(is_string($d)) {
+            $s.= $d;
+            $this->param['where'] = $s;
+            return $this;
+        }
+        foreach($d as $k => $v) {
+            if(is_array($v)){
+                switch(strtoupper($v[0])){
+                    case 'OR' :
+                        $s.=' AND `'.$k.'`=\''.$v[1].'\' OR `'.$k.'`=\''.$v[2].'\'';
+                        break;
+                    case 'IN' :
+                        $s.=' AND `'.$k.'` IN('.$v[1].')';
+                        break;
+                    case 'NOTIN' :
+                        $s.=' AND `'.$k.'` NOT IN('.$v[1].')';
+                        break;
+                    case 'GT' :
+                        $s.=' AND `'.$k.'`>\''.$v[1].'\'';
+                        break;
+                    case 'EGT' :
+                        $s.=' AND `'.$k.'`>=\''.$v[1].'\'';
+                        break;
+                    case 'LT' :
+                        $s.=' AND `'.$k.'`<\''.$v[1].'\'';
+                        break;
+                    case 'ELT' :
+                        $s.=' AND `'.$k.'`<=\''.$v[1].'\'';
+                        break;
+                    case 'NEQ' :
+                        $s.=' AND `'.$k.'`<>\''.$v[1].'\'';
+                        break;
+                    case 'LIKE' :
+                        $s.=' AND `'.$k.'` LIKE \''.$v[1].'\'';
+                        break;
+                    case 'BTN' :
+                        $s.=' AND `'.$k.'` BETWEEN \''.$v[1].'\' AND '.$v[2].'\'';
+                        break;
+                    case 'NBTN' :
+                        $s.=' AND `'.$k.'` NOT BETWEEN \''.$v[1].'\' AND '.$v[2].'\'';
+                        break;
+                    case 'EXP':
+                        $s.=' AND `'.$k.'` '.$v[1].'\'';
+                        break;
+                }
+            }else{
+                $s.=' AND `'.$k.'`=\''.$v.'\'';
+            }
+        }
+        $this->param['where'] = substr($s,4);
+        return $this;
+    } // end func
+
+#===== 查询 ===================================================
+    /**
+     *
+     * @param
+     * @return
+     */
+    function find($d = false){
+        if (empty($d) && empty($this->param['where']) ) {
+            return false;
+        }
+        if ($d) {
+            if(!is_numeric($d)) return false;
+        }
+        $sql = 'SELECT ';
+        $sql.= $this->param['field'] ? $this->param['field'] : '*';
+        $sql.= ' FROM '.$this->table;
+        if ($d) {
+            $sql.= ' WHERE id='.$d;
+        }elseif($this->param['where']) {
+            $sql.= ' WHERE '.$this->param['where'];
+        }
+        $sql.=' LIMIT 1';
+        $ret = $this->query($sql);
+        return $ret ? $ret[0] : false;
+    } // end func
+
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function select(){
+        $sql = 'SELECT ';
+        $sql.= $this->param['field'] ? $this->param['field'] : '*';
+        $sql.= ' FROM '.$this->table;
+        $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
+        $sql.= $this->param['group'] ? ' GROUP BY '.$this->param['group'] : '';
+        $sql.= $this->param['order'] ? ' ORDER BY '.$this->param['order'] : '';
+        $sql.= $this->param['limit'] ? ' LIMIT '.$this->param['limit'] : ' LIMIT '.$this->limit;
+        return $this->_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    } // end func
+
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function count(){
+        $sql = 'SELECT COUNT(*) number FROM '.$this->table;
+        $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
+        $ret = $this->query($sql);
+        return $ret[0]['number'];
+    } // end func
+
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    function save($pam){
+        $upstr = 'UPDATE '.$this->table.' SET ';
+        foreach($pam as $k => $v) {
+            $upstr.='`'.$k.'`=\''.$v.'\',';
+        }
+        $upstr = substr($upstr,0,count($upstr)-2);
+        $upstr.= ' WHERE '.$this->param['where'];
+        return $this->excute($upstr);
+    } // end func
+
+    function setInc($field, $value = false){
+        $upstr = 'UPDATE '.$this->table.' SET ';
+        if($value){
+            $upstr.=$field.'='.$field.'+'.$value;
+        }else{
+            $upstr.=$field.'='.$field.'+1';
+        }
+        $upstr.= ' WHERE '.$this->param['where'];
+        return $this->excute($upstr);
+    }
+
 }
