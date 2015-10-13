@@ -26,7 +26,7 @@ class kernel {
         $route = require APP_PATH.'/route.php';
 
         // read pathinfo
-        $pathinfo = substr($_SERVER['PATH_INFO'], 1);
+        $pathinfo = str_replace( '//', '/', $_SERVER['PATH_INFO'] );
         if(empty($pathinfo)) $pathinfo = '/';
 
         // get route value
@@ -45,7 +45,7 @@ class kernel {
 
         if(empty($pathinfo_key)) exception::outerror(404, [
             'message' => 'route not found',
-            'file'    => APP_PATH.'route'.FILES_SUFFIX,
+            'file'    => APP_PATH.'/route'.FILES_SUFFIX,
             'line'    => '0'
         ]);
         $temp = explode( '/', $pathinfo );

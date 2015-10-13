@@ -6,7 +6,7 @@
 */
 return [
     'type'    => 'mysql',
-    'host'    => '127.0.0.1',
+    'host'    => '123.57.77.98',
     'port'    => '3306',
     'user'    => 'wishbid',
     'pass'    => 'wishbid^&*(',

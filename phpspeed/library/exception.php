@@ -5,8 +5,8 @@ class exception {
         switch($code){
             case 404 : header('HTTP/1.0 404 Not Found'); break;
         }
-        if(APP_DEBUG) template::view(ERROR_DEBUG, $message);
-        else template::view(ERROR_PAGE);
+        if(APP_DEBUG) template::view( $message, ERROR_DEBUG );
+        else template::view('', ERROR_PAGE);
         exit;
     }
 }
