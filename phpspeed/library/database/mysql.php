@@ -44,6 +44,10 @@ trait pdodriver {
     private function _query( $sql ){
         return $this->_connect()->query($sql);
     }
+
+    private function _exec( $sql ){
+        return $this->_connect()->exec($sql);
+    }
 }
 
 class mysql{
@@ -64,28 +68,6 @@ class mysql{
     public function __construct( $tname = '' ){
         $this->table = $tname;
     }
-
-    /**
-     * 添加
-     * @param
-     * @return
-     */
-    function add($d){
-        $sql = 'INSERT INTO '.$this->table;
-        $field = '';
-        $value = '';
-        foreach($d as $k => $v) {
-            if (empty($field)) {
-                $field = '`'.$k.'`';
-                $value = '\''.$v.'\'';
-            }else {
-                $field .= ',`'.$k.'`';
-                $value .= ',\''.$v.'\'';
-            }
-        }
-        $sql.=' ('.$field.')'.' VALUES('.$value.')';
-        return $this->excute($sql);
-    } // end func
 
     /**
      *
@@ -129,6 +111,7 @@ class mysql{
         $this->param['limit'] = $d;
         return $this;
     } // end func
+
     /**
      *
      * @param
@@ -192,19 +175,34 @@ class mysql{
         return $this;
     } // end func
 
-#===== 查询 ===================================================
     /**
-     *
+     * mysql add
      * @param
      * @return
      */
-    function find($d = false){
-        if (empty($d) && empty($this->param['where']) ) {
-            return false;
+    public function insert($d, $ignore = false){
+        $sql = $ignore ? 'INSERT IGNORE INTO '.$this->table : 'INSERT INTO '.$this->table;
+        $field = '';
+        $value = '';
+        foreach($d as $k => $v) {
+            if (empty($field)) {
+                $field = '`'.$k.'`';
+                $value = '\''.$v.'\'';
+            }else {
+                $field .= ',`'.$k.'`';
+                $value .= ',\''.$v.'\'';
+            }
         }
-        if ($d) {
-            if(!is_numeric($d)) return false;
-        }
+        $sql.=' ('.$field.')'.' VALUES('.$value.')';
+        return $this->_exec($sql) ? $this->_connect()->lastInsertId() : false;
+    } // end func
+
+    /**
+     * mysql first
+     * @param
+     * @return
+     */
+    function first($d = false){
         $sql = 'SELECT ';
         $sql.= $this->param['field'] ? $this->param['field'] : '*';
         $sql.= ' FROM '.$this->table;
@@ -212,15 +210,16 @@ class mysql{
             $sql.= ' WHERE id='.$d;
         }elseif($this->param['where']) {
             $sql.= ' WHERE '.$this->param['where'];
+            $sql.= $this->param['group'] ? ' GROUP BY '.$this->param['group'] : '';
+            $sql.= $this->param['order'] ? ' ORDER BY '.$this->param['order'] : '';
         }
         $sql.=' LIMIT 1';
-        $ret = $this->query($sql);
-        return $ret ? $ret[0] : false;
+        return $this->_query($sql)->fetch( PDO::FETCH_ASSOC );
     } // end func
 
 
     /**
-     *
+     *  mysql select
      * @param
      * @return
      */
@@ -232,25 +231,24 @@ class mysql{
         $sql.= $this->param['group'] ? ' GROUP BY '.$this->param['group'] : '';
         $sql.= $this->param['order'] ? ' ORDER BY '.$this->param['order'] : '';
         $sql.= $this->param['limit'] ? ' LIMIT '.$this->param['limit'] : ' LIMIT '.$this->limit;
-        return $this->_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->_query($sql)->fetchAll( PDO::FETCH_ASSOC );
     } // end func
 
 
     /**
-     *
+     * mysql count
      * @param
      * @return
      */
     function count(){
-        $sql = 'SELECT COUNT(*) number FROM '.$this->table;
+        $sql = 'SELECT COUNT(*) FROM '.$this->table;
         $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
-        $ret = $this->query($sql);
-        return $ret[0]['number'];
+        return $this->_query($sql)->fetchColumn();
     } // end func
 
 
     /**
-     *
+     * mysql update
      * @param
      * @return
      */
@@ -261,10 +259,10 @@ class mysql{
         }
         $upstr = substr($upstr,0,count($upstr)-2);
         $upstr.= ' WHERE '.$this->param['where'];
-        return $this->excute($upstr);
+        return $this->_exec($upstr);
     } // end func
 
-    function setInc($field, $value = false){
+    function inc($field, $value = false){
         $upstr = 'UPDATE '.$this->table.' SET ';
         if($value){
             $upstr.=$field.'='.$field.'+'.$value;
@@ -272,7 +270,18 @@ class mysql{
             $upstr.=$field.'='.$field.'+1';
         }
         $upstr.= ' WHERE '.$this->param['where'];
-        return $this->excute($upstr);
+        return $this->_exec($upstr);
+    }
+
+    function dec($field, $value = false){
+        $upstr = 'UPDATE '.$this->table.' SET ';
+        if($value){
+            $upstr.=$field.'='.$field.'-'.$value;
+        }else{
+            $upstr.=$field.'='.$field.'-1';
+        }
+        $upstr.= ' WHERE '.$this->param['where'];
+        return $this->_exec($upstr);
     }
 
 }

@@ -10,15 +10,11 @@ class user {
 
     }
     public function index(){
-
-//        $list = mysql::query("select * from ele_user")->fetchAll(\PDO::FETCH_CLASS);
-//        echo "<pre>";
-//        var_dump($list);
 //        var_dump($this->_redis()->set('test', microtime(), 300));
 //        var_dump($this->_redis()->get('test'));
-        $list = DB::table('user_login')->select();
+        $ret = DB::table('user_login')->where('id>9527')->limit(10)->select();
         echo '<pre>';
-        var_dump($list);
+        var_dump($ret);
         template::view( microtime() );
     }
 }
