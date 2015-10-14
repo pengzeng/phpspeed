@@ -26,7 +26,7 @@ class kernel {
         $route = require APP_PATH.'/route.php';
 
         // read pathinfo
-        $pathinfo = str_replace( '//', '/', $_SERVER['PATH_INFO'] );
+        $pathinfo = PATH_INFO;
         if(empty($pathinfo)) $pathinfo = '/';
 
         // get route value

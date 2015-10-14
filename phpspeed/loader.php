@@ -46,8 +46,8 @@ define( 'LOGS_PATH', APP_PATH.'/runtime/logs' );
 // controller namespace name
 define( 'CONTROLLER_NAMESPACE', 'Controller' );
 
-
-
+if(isset($argv)) define( 'PATH_INFO', $argv[1] );
+else define('PATH_INFO', str_replace( '//', '/', $_SERVER['PATH_INFO'] ) );
 
 
 // include kernel
