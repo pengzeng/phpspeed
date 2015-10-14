@@ -47,10 +47,10 @@ define( 'LOGS_PATH', APP_PATH.'/runtime/logs' );
 define( 'CONTROLLER_NAMESPACE', 'controller' );
 
 if(isset($argv)) define( 'PATH_INFO', $argv[1] );
-else define('PATH_INFO', str_replace( '//', '/', $_SERVER['PATH_INFO'] ) );
+else define('PATH_INFO', str_replace( '//', '/', isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '' ) );
 
 
 // include kernel
 require_once APP_PATH.'/library/kernel'.FILES_SUFFIX;
 // start phpspeed
-Library\kernel::init();
+library\kernel::init();
