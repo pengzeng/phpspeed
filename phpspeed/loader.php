@@ -36,7 +36,7 @@ define( 'APP_PATH', PHP_SPEED );
 // config path
 define( 'CONFIG_PATH', APP_PATH.'/config/' );
 // controller path
-define( 'CONTROLLER_PATH', APP_PATH.'/Controller' );
+define( 'CONTROLLER_PATH', APP_PATH.'/controller' );
 // template files path
 define( 'TEMPLATE_PATH', APP_PATH.'/template' );
 // cache path
@@ -44,7 +44,7 @@ define( 'RUNTIME_PATH', APP_PATH.'/runtime/cache' );
 // logs path
 define( 'LOGS_PATH', APP_PATH.'/runtime/logs' );
 // controller namespace name
-define( 'CONTROLLER_NAMESPACE', 'Controller' );
+define( 'CONTROLLER_NAMESPACE', 'controller' );
 
 if(isset($argv)) define( 'PATH_INFO', $argv[1] );
 else define('PATH_INFO', str_replace( '//', '/', $_SERVER['PATH_INFO'] ) );

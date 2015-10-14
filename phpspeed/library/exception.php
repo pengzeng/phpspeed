@@ -1,4 +1,4 @@
-<?php namespace Library;
+<?php namespace library;
 
 class exception {
     public static function outerror( $code, $message = false){

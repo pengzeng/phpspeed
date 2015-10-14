@@ -1,8 +1,8 @@
-<?php namespace Controller\Home;
+<?php namespace controller\home;
 
 
-use Library\template,
-    Library\DB;
+use library\template,
+    library\db;
 
 class user {
 
@@ -12,7 +12,7 @@ class user {
     public function index(){
 //        var_dump($this->_redis()->set('test', microtime(), 300));
 //        var_dump($this->_redis()->get('test'));
-        $ret = DB::table('user_login')->where('id>9527')->limit(10)->select();
+        $ret = db::table('user_login')->where('id>9527')->limit(10)->select();
         echo '<pre>';
         var_dump($ret);
         template::view( microtime() );

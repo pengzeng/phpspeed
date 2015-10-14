@@ -1,7 +1,7 @@
-<?php namespace Library;
-use Library\database\mysql;
+<?php namespace library;
+use library\database\mysql;
 
-class DB{
+class db{
 
     public static function table( $tname = ''){
         return new mysql( $tname );

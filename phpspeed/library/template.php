@@ -1,4 +1,4 @@
-<?php namespace Library;
+<?php namespace library;
 
 class template {
     public static function view( $view = '', $_template_ = false){

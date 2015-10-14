@@ -1,4 +1,4 @@
-<?php namespace Library\database;
+<?php namespace library\database;
 
 use Redis as _Redis,
     RedisException;

@@ -1,4 +1,4 @@
-<?php namespace Library;
+<?php namespace library;
 
 /*
 | phpspeed kernel class
@@ -56,7 +56,7 @@ class kernel {
     }
 
     public static function autoload($class){
-        require APP_PATH.'/'.$class.FILES_SUFFIX;
+        require APP_PATH.'/'.str_replace('\\','/',$class).FILES_SUFFIX;
     }
 
     public static function fatalError(){
@@ -145,8 +145,8 @@ class kernel {
             if(!defined('CONTROLLER_NAME')){
                 return require CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
             }
-            $_namespace = CONTROLLER_NAMESPACE;
-            if(defined('GROUP_NAME')) $_namespace.='\\'.ucwords(GROUP_NAME).'\\'.CONTROLLER_NAME;
+            $_namespace = '\\'.CONTROLLER_NAMESPACE;
+            if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
             else $_namespace.='\\'.CONTROLLER_NAME;
             $objects = new $_namespace;
             $action  = ACTION_NAME;

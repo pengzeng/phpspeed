@@ -1,6 +1,6 @@
-<?php namespace Controller\Home;
+<?php namespace controller\home;
 
-use Library\template;
+use library\template;
 
 class index {
     public function test(){
