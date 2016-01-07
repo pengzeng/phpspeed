@@ -12,9 +12,8 @@ class user {
     public function index(){
 //        var_dump($this->_redis()->set('test', microtime(), 300));
 //        var_dump($this->_redis()->get('test'));
-        $ret = db::table('sh_member')->where('uid<10')->limit(10)->select();
-        echo '<pre>';
-        var_dump($ret);
-        template::view( microtime() );
+//        $ret = db::table('sh_member')->where('uid<10')->limit(10)->select();
+        echo '9527','3366';
+        template::view();
     }
 }
