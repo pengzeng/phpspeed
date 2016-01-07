@@ -51,6 +51,6 @@ else define('PATH_INFO', str_replace( '//', '/', isset($_SERVER['PATH_INFO']) ? 
 
 
 // include kernel
-require_once APP_PATH.'/library/kernel'.FILES_SUFFIX;
+include APP_PATH.'/library/kernel'.FILES_SUFFIX;
 // start phpspeed
 library\kernel::init();

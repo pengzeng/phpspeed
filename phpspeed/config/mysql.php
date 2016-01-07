@@ -6,10 +6,10 @@
 */
 return [
     'type'    => 'mysql',
-    'host'    => '123.57.77.98',
+    'host'    => '127.0.0.1',
     'port'    => '3306',
-    'user'    => 'wishbid',
-    'pass'    => 'wishbid^&*(',
-    'name'    => 'wishbid',
+    'user'    => 'mysqlmg',
+    'pass'    => '123456',
+    'name'    => 'yunzs',
     'charset' => 'utf8'
 ];

@@ -11,5 +11,5 @@
 */
 function config( $name ){
     if( ! is_string($name) ) return $name;
-    return require CONFIG_PATH.$name.FILES_SUFFIX;
+    return include CONFIG_PATH.$name.FILES_SUFFIX;
 }

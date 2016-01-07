@@ -23,7 +23,7 @@ class kernel {
         set_exception_handler('Library\kernel::appException');
 
         // read route file
-        $route = require APP_PATH.'/route.php';
+        $route = include APP_PATH.'/route.php';
 
         // read pathinfo
         $pathinfo = PATH_INFO;
@@ -56,7 +56,7 @@ class kernel {
     }
 
     public static function autoload($class){
-        require APP_PATH.'/'.str_replace('\\','/',$class).FILES_SUFFIX;
+        include APP_PATH.'/'.str_replace('\\','/',$class).FILES_SUFFIX;
     }
 
     public static function fatalError(){
@@ -143,7 +143,7 @@ class kernel {
         } else {
 
             if(!defined('CONTROLLER_NAME')){
-                return require CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
+                return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
             }
             $_namespace = '\\'.CONTROLLER_NAMESPACE;
             if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
@@ -158,4 +158,4 @@ class kernel {
 
 }
 
-require_once APP_PATH.'/function/func.php';
+include_once APP_PATH.'/function/func.php';
