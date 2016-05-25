@@ -49,8 +49,11 @@ define( 'CONTROLLER_NAMESPACE', 'controller' );
 if(isset($argv)) define( 'PATH_INFO', $argv[1] );
 else define('PATH_INFO', str_replace( '//', '/', isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '' ) );
 
+// template data
+$_extract = [];
 
 // include kernel
 include APP_PATH.'/library/kernel'.FILES_SUFFIX;
+
 // start phpspeed
 library\kernel::init();

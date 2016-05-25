@@ -3,11 +3,10 @@
 use Redis as _Redis,
     RedisException;
 
-trait redis {
-    private static $_redis  = null;
-    private static $_prefix = '';
-    private function _redis_connection(){
-        if( ! self::$_redis instanceof _Redis){
+class redis {
+    static function _connect(){
+        static $_redis;
+        if( ! $_redis instanceof _Redis){
             $conf = config('redis') + [
                     'host'   => '127.0.0.1',
                     'port'   => '6379',
@@ -19,7 +18,7 @@ trait redis {
                 $instance = new _Redis();
                 $instance->connect($conf['host'], $conf['port']);
                 $conf['auth'] && $instance->auth($conf['auth']);
-                self::$_redis = $instance;
+                $_redis = $instance;
             }catch ( RedisException $e){
                 \Library\exception::outerror(404, [
                     'message' => $e->getMessage(),
@@ -28,6 +27,6 @@ trait redis {
                 ]);
             }
         }
-        return self::$_redis;
+        return $_redis;
     }
 }

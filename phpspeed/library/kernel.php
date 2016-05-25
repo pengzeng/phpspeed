@@ -12,6 +12,10 @@
 class kernel {
     private static $route_map = [];
     public static function init(){
+        header("Server: yzs");
+        header("X-Powered-By: yzs");
+        header("Content-type: text/html; charset=utf-8");
+        session_start();
 
         // register autoload function
         spl_autoload_register( 'Library\kernel::autoload' );
@@ -38,9 +42,9 @@ class kernel {
         $pathinfo_key = false;
         foreach ($route as $k => $v) {
             if( ! ($k == '/') )
-            if( preg_match('/^'.str_replace( '/', '\/', $k ).'/', $pathinfo) ){
-                $pathinfo_key = $k;break;
-            };
+                if( preg_match('/^'.str_replace( '/', '\/', $k ).'$/', $pathinfo) ){
+                    $pathinfo_key = $k;break;
+                };
         }
 
         if(empty($pathinfo_key)) exception::outerror(404, [
@@ -97,7 +101,7 @@ class kernel {
                     case 'string' :
                         $tname = empty(static::$route_map['action']) ?
                             $object : $object.'/'.static::$route_map['action'];
-                        template::view( $tname );
+                        template::view( [], $tname );
                         exit;
 
                     // return temlate + data
@@ -119,7 +123,8 @@ class kernel {
 
             // route array
             case 'array'  :
-                self::$route_map['action'] += $value;
+                self::$route_map['controller'] = $value[0];
+                self::$route_map['action'] = strtolower($_SERVER['REQUEST_METHOD']);
                 break;
             // route error
             default :
@@ -133,25 +138,25 @@ class kernel {
     }
 
     private static function template(){
+        global $_extract;
         // set define
         !empty(self::$route_map['group']) && define( 'GROUP_NAME' ,self::$route_map['group']);
         !empty(self::$route_map['controller']) && define( 'CONTROLLER_NAME' ,self::$route_map['controller']);
         !empty(self::$route_map['action']) && define( 'ACTION_NAME' ,self::$route_map['action']);
 
-        if(self::$route_map['request']){
-            // header request: post get put delete patch options head other ...
-        } else {
 
-            if(!defined('CONTROLLER_NAME')){
-                return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
-            }
-            $_namespace = '\\'.CONTROLLER_NAMESPACE;
-            if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
-            else $_namespace.='\\'.CONTROLLER_NAME;
-            $objects = new $_namespace;
-            $action  = ACTION_NAME;
-            $objects->$action();
+        if(!defined('CONTROLLER_NAME')){
+            return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
         }
+        $_namespace = '\\'.CONTROLLER_NAMESPACE;
+        if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
+        else $_namespace.='\\'.CONTROLLER_NAME;
+        $objects = new $_namespace;
+        if(is_array($objects->extract))
+            $_extract = $objects->extract;
+        $action  = ACTION_NAME;
+        $objects->$action();
+        return true;
     }
 
 
