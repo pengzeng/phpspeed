@@ -38,7 +38,7 @@ class kernel {
         set_exception_handler('Library\appexception::app_exception');
 
         // 加载路由配置
-        $route = config('route');
+        $route = include(APP_PATH.'route.'.FILES_SUFFIX);
 
         // 读取PATHINFO
         $pathinfo = PATH_INFO;
