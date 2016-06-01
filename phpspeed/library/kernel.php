@@ -70,7 +70,7 @@ class kernel {
 
     // 自动加载文件
     public static function autoload($class){
-        include APP_PATH.'/'.str_replace('\\','/',$class).FILES_SUFFIX;
+        include(APP_PATH.'/'.str_replace('\\','/',$class).FILES_SUFFIX);
     }
 
     // 路由处理
@@ -125,7 +125,7 @@ class kernel {
         // set define
 
         if(!defined('CONTROLLER_NAME')){
-            return include CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX;
+            return include(CONTROLLER_PATH.'/'.ACTION_NAME.FILES_SUFFIX);
         }
         $_namespace = '\\'.CONTROLLER_NAMESPACE;
         if(defined('GROUP_NAME')) $_namespace.='\\'.GROUP_NAME.'\\'.CONTROLLER_NAME;
