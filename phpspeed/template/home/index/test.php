@@ -1,2 +1,1 @@
-my is home/index/test
-<p><?php echo $view;?></p>
+<h3>/home/index/test</h3>

@@ -1,5 +1,7 @@
 <?php namespace library;
 
+use Exception;
+
 class template {
     public static function view( $view = '', $_template_ = false){
         extract($view);
@@ -12,17 +14,12 @@ class template {
             (defined('ACTION_NAME')) && $_template_.='/'.ACTION_NAME;
             $_template_.=TEMPLATE_SUFFIX;
         }
-        include self::runtime( $_template_ );
+        include(self::runtime( $_template_ ));
     }
 
     public static function runtime( $path ){
-        if( ! is_file(TEMPLATE_PATH.$path)) {
-            exception::outerror(404, [
-                'message' => 'template not found',
-                'file'    => $path,
-                'line'    => 0
-            ]);
-        }
+        if( ! is_file(TEMPLATE_PATH.$path))
+            throw new Exception('template not found,'.TEMPLATE_PATH.$path);
 
         $fname = self::cache_file_name($path);
 
@@ -38,13 +35,9 @@ class template {
         foreach ($temp as $v) {
             $dir.='/'.$v;
         }
+        if(!file_exists($dir))
         ! file_exists($dir) &&
-        ! mkdir($dir, 0755, true) &&
-        exception::outerror(404, [
-            'message' => 'runtime directory is not available',
-            'file'    => $dir,
-            'line'    => 0
-        ]);
+        ! mkdir($dir, 0755, true) && trigger_error('runtime directory is not available', E_ERROR);
         return $dir.'/'.md5($path).CACHE_SUFFIX;
     }
     public static function replace($fname, $path){
@@ -89,9 +82,9 @@ class template {
         preg_match_all($inc_pattern, $txt, $inc);
         $inc_replace = [];
         foreach ($inc[1] as $k => $v) {
-            $inc_replace[] = '<?php include "'.
+            $inc_replace[] = '<?php include("'.
                 self::runtime( '/'.$v.TEMPLATE_SUFFIX ).
-                '";?>';
+                '");?>';
         }
         // replace and write cache
         if(!(empty($inc[0])))

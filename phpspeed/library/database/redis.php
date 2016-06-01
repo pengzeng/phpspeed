@@ -1,7 +1,7 @@
 <?php namespace library\database;
 
 use Redis as _Redis,
-    RedisException;
+    RedisException,Exception;
 
 class redis {
     static function _connect(){
@@ -20,11 +20,7 @@ class redis {
                 $conf['auth'] && $instance->auth($conf['auth']);
                 $_redis = $instance;
             }catch ( RedisException $e){
-                \Library\exception::outerror(404, [
-                    'message' => $e->getMessage(),
-                    'file'    => $e->getFile(),
-                    'line'    => $e->getLine()
-                ]);
+                throw new Exception($e->getMessage());
             }
         }
         return $_redis;

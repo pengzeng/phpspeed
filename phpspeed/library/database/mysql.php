@@ -6,7 +6,7 @@
 |------------------------------------------------------------------------------
 */
 
-use PDO,PDOException,PDOStatement;
+use PDO,PDOException,PDOStatement,Exception;
 
 class pdodriver {
 
@@ -22,11 +22,7 @@ class pdodriver {
                     $conf['user'],
                     $conf['pass']);
             }catch (PDOException $e){
-                \library\exception::outerror(404, array(
-                    'message' => $e->getMessage(),
-                    'file'    => $e->getFile(),
-                    'line'    => $e->getLine()
-                ));
+                throw new Exception($e->getMessage());
             }
 
         }

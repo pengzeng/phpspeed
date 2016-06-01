@@ -2,7 +2,7 @@
 
 ```php
     nginx rewrite: rewrite ^(.*)$ /index.php/$1 last; #pathinfo
-    PHP: 5.5.x
+    PHP: 5.6.x
 ```
 
 ## 目录结构
@@ -23,26 +23,30 @@
 ## 路由配置
 ```php
 return [
-    // 直接返回模板
-    '/' => function(){return 'index';},
-    '/home/user/info' => function(){
-        return [
-            'info',['username' => 'bruce']
-        ];
-    },
 
-    // 基本路由配置
-    '/home/user/.*'    => 'home/user',
-    '/home/item/.*'    => 'home/item',
-    '/home/list/index' => 'home/list/index',
-    '/test'            => 'test',    // 解析到 controller 下test文件
+    // 默认路由 [路由类型,分组名/控制器｜控制器]
+    '/home/index/.*' => ['default','home/index'],
+
+    // 静态html
+    '/' => ['static','index'],
+
+    // 模板路由(直接返回模板) [路由类型,模板名称,输出数据]
+    '/tpl' => ['template','html',['welcome' => 'welcome phpspeed !']],
+
+    // 接口路由 [路由类型,分组名/控制器｜控制器,['GET','POST','DELETE','SELECT']]
+    // 'product' => ['interface','product',[]], // 请求类型数组为空代表任意
+    '/product' => ['interface','product',['GET','POST','DELETE','SAVE']],
+
+    // 嘿嘿
+    '/test' => ['default','test'],
+
 ];
 ```
 
 ## 加载子模板
 ```php
 @include('public/header')
-@include("public/header")
+@include("public/footer")
 ```
 
 ## foreach 结构
@@ -83,10 +87,6 @@ return [
 {@aa=['45','321','13']}
 ```
 
-## 直接使用函数
-```php
-{:extract($aa)}
-```
 
 ## 输出
 ```php
