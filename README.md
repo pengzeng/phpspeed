@@ -42,21 +42,25 @@ return [
 
 ];
 ```
+## 模板处理
 
-## 加载子模板
+### 控制器 use library\template;
+template::view(array 输出到模板的数组 [,string 指定模板文件] );
+
+### 加载子模板
 ```php
 @include('public/header')
 @include("public/footer")
 ```
 
-## foreach 结构
+### foreach 结构
 ```php
 @foreach($data as $k => $v)
 <p><{$v}></p>
 @end
 ```
 
-## if 结构
+### if 结构
 ```php
 @if(1)
 <p>9527</p>
@@ -65,7 +69,7 @@ return [
 @end
 ```
 
-## switch 结构
+### switch 结构
 ```php
 @switch($aa)
 @case '1' : <p>9527</p> @break
@@ -74,23 +78,57 @@ return [
 @end
 ```
 
-## for 结构
+### for 结构
 ```php
 @for($i=0;$i<10;$i++)
 <p><{$i}></p>
 @end
 ```
 
-## 定义变量
+### 定义变量
 ```php
 {@aa='1'}
 {@aa=['45','321','13']}
 ```
 
 
-## 输出
+### 输出
 ```php
 <p><{$aa}></p>
 <{date('Y-m-d',time())}>
 <{$check ? 'true' : 'false'}>
+```
+
+## 操作数据库 链式操作
+```php
+
+### 控制器  use library\db;
+
+db::table('table_name')->where(array()|string)->order(string)->field(string, [ bool 反选 ])->limit(string)->select();
+
+db::table('table_name')->where(array()|string)->first();
+
+db::table('table_name')->join(' a LEFT JOIN table_name2 b ON a.id=b.id')->select();
+
+_query string 原始sql查询(返回PDO对象)
+_connect 返回PDO链接对象
+
+where array|string 查询条件
+group string 分组字段名
+having string 分组查询条件
+insert array 增加记录
+delete 删除记录返回结果
+save array 更新记录
+order string 排序条件
+join string 连接查询字符串
+field string 字段筛选,[bool true反选]
+limit string 记录数
+select 返回值 array 返回多条记录
+first 返回值 array 返回单条记录
+value string 字段名 (返回值 string 参数)
+count  返回值 int (统计记录数)
+sum string 字段名(返回求和结果)
+inc string 字段名,[int 增加整数] (字段增加)
+dec string 字段名,[int 减少整数] (字段减少)
+
 ```
