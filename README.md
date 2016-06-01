@@ -45,7 +45,10 @@ return [
 ## 模板处理
 
 ### 控制器 use library\template;
+
+```php
 template::view(array 输出到模板的数组 [,string 指定模板文件] );
+```
 
 ### 加载子模板
 ```php
@@ -100,9 +103,11 @@ template::view(array 输出到模板的数组 [,string 指定模板文件] );
 ```
 
 ## 操作数据库 链式操作
-```php
 
 ### 控制器  use library\db;
+
+```php
+
 
 db::table('table_name')->where(array()|string)->order(string)->field(string, [ bool 反选 ])->limit(string)->select();
 
