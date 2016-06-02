@@ -1,4 +1,4 @@
-<?php namespace Extend;
+<?php namespace extend;
 
 class wechat {
     public function test(){
