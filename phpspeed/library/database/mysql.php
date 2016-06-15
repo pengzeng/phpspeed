@@ -162,13 +162,13 @@ class mysql{
                         $s.=' AND `'.$k.'` LIKE \''.$v[1].'\'';
                         break;
                     case 'BTN' :
-                        $s.=' AND `'.$k.'` BETWEEN \''.$v[1].'\' AND '.$v[2].'\'';
+                        $s.=' AND `'.$k.'` BETWEEN \''.$v[1].'\' AND \''.$v[2].'\'';
                         break;
                     case 'NBTN' :
-                        $s.=' AND `'.$k.'` NOT BETWEEN \''.$v[1].'\' AND '.$v[2].'\'';
+                        $s.=' AND `'.$k.'` NOT BETWEEN \''.$v[1].'\' AND \''.$v[2].'\'';
                         break;
                     case 'EXP':
-                        $s.=' AND `'.$k.'` '.$v[1].'\'';
+                        $s.=' AND `'.$k.'` '.$v[1];
                         break;
                 }
             }else{
