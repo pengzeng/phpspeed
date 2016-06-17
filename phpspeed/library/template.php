@@ -4,7 +4,8 @@ use Exception;
 
 class template {
     public static function view( $view = '', $_template_ = false){
-        extract($view);
+        global $_extract;
+        extract( array_merge($view, $_extract) );
         if($_template_){
             $_template_ = '/'.$_template_.TEMPLATE_SUFFIX;
         }else{
