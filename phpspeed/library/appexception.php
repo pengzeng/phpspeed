@@ -34,13 +34,39 @@ class appexception{
 
     // 输出错误信息
     public static function out_error( $e ){
+
+        if(in_array($e['message'],[401,403,404,500]))
+            self::error_code($e['message']);
+
         if(APP_DEBUG)
-            echo(
+            exit(
                 "Message : {$e['message']}<br />".
                 "File : {$e['file']}<br />".
                 "Line : {$e['line']}<br />".
                 "Code : {$e['code']}"
             );
+    }
+
+    public static function error_code($code){
+        switch($code){
+            case 401 :
+                header('HTTP/1.1 401 Unauthorized');
+                header("Status Code: 401 Unauthorized");
+                break;
+            case 403 :
+                header('HTTP/1.1 403 Forbidden');
+                header("Status Code: 403 Forbidden");
+                break;
+            case 404 :
+                header('HTTP/1.1 404 Not Found');
+                header("Status Code: 404 Not Found");
+                break;
+            case 500 :
+                header('HTTP/1.1 500 Internal Server Error');
+                header("Status Code: 500 Internal Server Error");
+                break;
+        }
+        exit;
     }
 
 //1 E_ERROR 致命的运行错误。错误无法恢复，暂停执行脚本。

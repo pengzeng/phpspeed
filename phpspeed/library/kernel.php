@@ -26,16 +26,16 @@ class kernel {
         session_start();
 
         // 注册自动加载函数
-        spl_autoload_register( 'Library\kernel::autoload' );
+        spl_autoload_register( 'library\kernel::autoload' );
 
         // 注册系统错误捕获函数
-        register_shutdown_function('Library\appexception::system_error');
+        register_shutdown_function('library\appexception::system_error');
 
         // 注册用户自定义错误捕获函数
-        set_error_handler('Library\appexception::app_error');
+        set_error_handler('library\appexception::app_error');
 
         // 注册用户抛出的异常错误捕获函数
-        set_exception_handler('Library\appexception::app_exception');
+        set_exception_handler('library\appexception::app_exception');
 
         // 加载路由配置
         $route = include(APP_PATH.'/route'.FILES_SUFFIX);
