@@ -45,6 +45,7 @@ class appexception{
                 "Line : {$e['line']}<br />".
                 "Code : {$e['code']}"
             );
+        else self::error_code(404);
     }
 
     public static function error_code($code){

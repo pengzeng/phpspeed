@@ -2,10 +2,10 @@
 
 class product{
     public function get(){
-        echo 'test interface get';
+        echo 'test api get';
     }
 
     public function post(){
-        echo 'test interface post';
+        echo 'test api post';
     }
 }

@@ -78,24 +78,26 @@ class kernel {
         switch( $value[0] ){
 
             // route interface
-            case 'interface' :
+            case 'api' :
+                if(!empty($value[2]) && !in_array(strtoupper($_SERVER['REQUEST_METHOD']), $value[2]))
+                    throw new Exception('api method not found');
                 self::$route_map['controller'] = $value[1];
                 self::$route_map['action'] = strtolower($_SERVER['REQUEST_METHOD']);
                 self::interface_route();
                 exit;
 
             // route template
-            case 'template' :
+            case 'tpl' :
                 template::view($value[2], $value[1]);
                 exit;
 
             // route static
-            case 'static' :
+            case 'html' :
                 include(TEMPLATE_PATH.'/'.$value[1].TEMPLATE_SUFFIX);
                 exit;
 
             // route default
-            case 'default'  :
+            case 'url'  :
                 $temp = explode( '/', $value[1] );
                 $count = count($temp);
                 if( isset(static::$route_map['action']) ){
