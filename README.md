@@ -1,4 +1,4 @@
-## phpspeed framework Alpha version 1.0
+## phpspeed framework stable version 1.0
 
 ```php
     nginx rewrite: rewrite ^(.*)$ /index.php/$1 last; #pathinfo
