@@ -59,7 +59,7 @@ template::view(array 输出到模板的数组 [,string 指定模板文件] );
 ### foreach 结构
 ```php
 @foreach($data as $k => $v)
-<p><{$v}></p>
+<p>{{$v}}</p>
 @end
 ```
 
