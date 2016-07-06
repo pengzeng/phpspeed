@@ -53,9 +53,14 @@ define( 'LOGS_PATH', APP_PATH.'/runtime/logs' );
 // controller namespace name
 define( 'CONTROLLER_NAMESPACE', 'controller' );
 
+// now time
+define( 'NOW_TIME', $_SERVER['REQUEST_TIME'] );
 
-if(isset($argv)) define( 'PATH_INFO', $argv[1] );
-else define('PATH_INFO', str_replace( '//', '/', isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '' ) );
+if(isset($argv)) {
+    define( 'PATH_INFO', $argv[1] );
+    isset($argv[2]) && define( 'PATH_PARAM', $argv[2] );
+} else
+    define('PATH_INFO', str_replace( '//', '/', isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '' ) );
 
 // template data
 $_extract = [];
