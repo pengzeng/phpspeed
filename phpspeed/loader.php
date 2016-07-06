@@ -27,7 +27,7 @@ const CACHE_SUFFIX     = '.php';
 
 
 // start debug
-define( 'APP_DEBUG', false );
+define( 'APP_DEBUG', true );
 
 // dir
 define( 'PHP_SPEED', __DIR__ );

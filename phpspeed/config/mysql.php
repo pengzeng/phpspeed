@@ -10,6 +10,6 @@ return [
     'port'    => '3306',
     'user'    => 'mysqlmg',
     'pass'    => '123456',
-    'name'    => 'yunzs',
-    'charset' => 'utf8'
+    'name'    => 'test',
+    'charset' => 'utf8mb4'
 ];
