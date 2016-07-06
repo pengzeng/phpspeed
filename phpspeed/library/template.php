@@ -3,7 +3,7 @@
 use Exception;
 
 class template {
-    public static function view( $view = '', $_template_ = false){
+    public static function view( $view = [], $_template_ = false){
         global $_extract;
         extract( array_merge($view, $_extract) );
         if($_template_){
@@ -48,7 +48,7 @@ class template {
         }
         // template regular
         $pattern = [
-            '/<\{(.*)\}>/Us',          # output
+            '/\{\{(.*)\}\}/Us',          # output
             '/{@(.*)}/Us',             # define variable
             '/{:(.*)}/Us',             # use function
             '/@end/Us',                # if for foreach ... end
@@ -57,10 +57,11 @@ class template {
             '/@elseif\((.*)\)/Us',     # elseif start
             '/@else/Us',               # else
             '/@switch\((.*)\)/Us',     # switch start
-            '/@case(.*):/Us',          # switch case
-            '/@default(.*):/Us',       # switch start
-            '/@break/Us',              # switch start
+            '/@case\((.*),(.*)\)/Us',          # switch case
+            '/@default\((.*)\)/Us',       # switch start
+            '/@switchend/Us',       # switch start
             '/@for\((.*)\)/Us',        # for start
+            '/__SELF__/Us',            # public path
         ];
         // replace str
         $replace = [
@@ -72,12 +73,18 @@ class template {
             '<?php if(\\1){?>',
             '<?php }elseif(\\1){?>',
             '<?php }else{?>',
-            '<?php switch(\\1){?>',
-            '<?php case \\1 :?>',
-            '<?php default \\1 :?>',
-            '<?php break;?>',
+            '<?php switch(\\1){',
+            'case \\1 : echo \\2; break;',
+            'default : echo \\1 ;',
+            '}?>',
             '<?php for(\\1){?>',
+            $_SERVER['REQUEST_URI'],
         ];
+
+        foreach(config('template') as $k => $v){
+            $pattern[] = '/'.$k.'/Us';
+            $replace[] = $v;
+        }
         // recursive of son template
         $inc_pattern = '/@include\([\'|"](.*)[\'|"]\)/Us';
         preg_match_all($inc_pattern, $txt, $inc);

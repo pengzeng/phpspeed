@@ -74,17 +74,16 @@ template::view(array 输出到模板的数组 [,string 指定模板文件] );
 
 ### switch 结构
 ```php
-@switch($aa)
-@case '1' : <p>9527</p> @break
-@case '2' : <p>9527</p> @break
-@default  : <p>9527</p>
-@end
+@switch($v['status'])
+    @case('1','aaa')
+    @case('2','ccc')
+@switchend
 ```
 
 ### for 结构
 ```php
 @for($i=0;$i<10;$i++)
-<p><{$i}></p>
+<p>{{$i}}</p>
 @end
 ```
 
@@ -97,9 +96,9 @@ template::view(array 输出到模板的数组 [,string 指定模板文件] );
 
 ### 输出
 ```php
-<p><{$aa}></p>
-<{date('Y-m-d',time())}>
-<{$check ? 'true' : 'false'}>
+<p>{{$aa}}</p>
+{{date('Y-m-d',time())}}
+{{$check ? 'true' : 'false'}}
 ```
 
 ## 操作数据库 链式操作
