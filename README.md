@@ -135,4 +135,12 @@ sum string 字段名(返回求和结果)
 inc string 字段名,[int 增加整数] (字段增加)
 dec string 字段名,[int 减少整数] (字段减少)
 
+
+
+
+
+
+
+
+
 ```

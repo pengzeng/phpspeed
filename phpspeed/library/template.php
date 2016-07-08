@@ -24,9 +24,7 @@ class template {
 
         $fname = self::cache_file_name($path);
 
-        if(file_exists($fname)){
-            APP_DEBUG && self::replace($fname, TEMPLATE_PATH.$path);
-        } else self::replace($fname, TEMPLATE_PATH.$path);
+        self::replace($fname, TEMPLATE_PATH.$path);
         return $fname;
     }
     public static function cache_file_name($path){
