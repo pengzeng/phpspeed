@@ -281,10 +281,12 @@ class mysql{
      */
     public function save($pam){
         $upstr = 'UPDATE '.$this->table.' SET ';
-        foreach($pam as $k => $v) {
-            $upstr.='`'.$k.'`=\''.$v.'\',';
-        }
-        $upstr = substr($upstr,0,count($upstr)-2);
+        if(is_array($pam)){
+            foreach($pam as $k => $v) {
+                $upstr.='`'.$k.'`=\''.$v.'\',';
+            }
+            $upstr = substr($upstr,0,count($upstr)-2);
+        }else $upstr.=$pam;
         $upstr.= ' WHERE '.$this->param['where'];
         return $this->_exec($upstr);
     } // end func
@@ -346,5 +348,32 @@ class mysql{
     public function _connect(){
         $driver = new pdodriver();
         return $driver->_connect();
+    }
+
+    /*
+     * 启动事务
+     * @access public
+     * @return void
+     */
+    public function startTrans() {
+        return $this->_connect()->beginTransaction();
+    }
+
+    /*
+     * 提交事务
+     * @access public
+     * @return boolean
+     */
+    public function commit() {
+        return $this->_connect()->commit();
+    }
+
+    /*
+     * 事务回滚
+     * @access public
+     * @return boolean
+     */
+    public function rollback() {
+        return $this->_connect()->rollBack();
     }
 }
