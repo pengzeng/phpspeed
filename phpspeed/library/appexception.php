@@ -19,7 +19,12 @@ class appexception{
 
     // 注册用户自定义错误捕获函数
     public static function app_error($errno, $errstr, $errfile, $errline){
-
+        self::out_error([
+            'message' => $errstr,
+            'file'    => $errfile,
+            'line'    => $errline,
+            'code'    => $errno,
+        ]);
     }
 
     // 注册用户抛出的异常错误捕获函数

@@ -267,8 +267,9 @@ function session( $key = '', $data = false, $expire = 3600){
         }
     }else{
         if($data === false){
-            $sess = is_null(json_decode($_SESSION[$key], true)) ?
-                $_SESSION[$key] : json_decode($_SESSION[$key], true);
+            if(isset($_SESSION[$key]))
+                $sess = is_null(json_decode($_SESSION[$key], true)) ?
+                    $_SESSION[$key] : json_decode($_SESSION[$key], true);
         }elseif($data === null || $data === NULL){
             unset($_SESSION[$key]);
         }else{
@@ -291,6 +292,7 @@ function cookie($key = '', $data = false, $expire = 7200){
         }
     }else{
         if($data === false){
+            if(isset($_COOKIE[$key]))
             $sess = is_null(json_decode($_COOKIE[$key], true)) ?
                 $_COOKIE[$key] : json_decode($_COOKIE[$key], true);
 
