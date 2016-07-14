@@ -19,22 +19,22 @@ class appexception{
 
     // 注册用户自定义错误捕获函数
     public static function app_error($errno, $errstr, $errfile, $errline){
-        self::out_error([
-            'message' => $errstr,
-            'file'    => $errfile,
-            'line'    => $errline,
-            'code'    => $errno,
-        ]);
+//        self::out_error([
+//            'message' => $errstr,
+//            'file'    => $errfile,
+//            'line'    => $errline,
+//            'code'    => $errno,
+//        ]);
     }
 
     // 注册用户抛出的异常错误捕获函数
     public static function app_exception(Exception $e){
-//        self::out_error([
-//            'message' => $e->getMessage(),
-//            'file'    => $e->getFile(),
-//            'line'    => $e->getLine(),
-//            'code'    => $e->getCode(),
-//        ]);
+        self::out_error([
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'code'    => $e->getCode(),
+        ]);
     }
 
     // 输出错误信息
