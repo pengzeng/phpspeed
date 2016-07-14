@@ -29,12 +29,12 @@ class appexception{
 
     // 注册用户抛出的异常错误捕获函数
     public static function app_exception(Exception $e){
-        self::out_error([
-            'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
-            'code'    => $e->getCode(),
-        ]);
+//        self::out_error([
+//            'message' => $e->getMessage(),
+//            'file'    => $e->getFile(),
+//            'line'    => $e->getLine(),
+//            'code'    => $e->getCode(),
+//        ]);
     }
 
     // 输出错误信息
@@ -50,7 +50,7 @@ class appexception{
                 "Line : {$e['line']}<br />".
                 "Code : {$e['code']}"
             );
-        else self::error_code(404);
+
     }
 
     public static function error_code($code){

@@ -398,3 +398,10 @@ function array_map_recursive($filter, $data) {
     }
     return $result;
 }
+
+// 过滤表单中的表达式
+function filter_exp(&$value){
+    if (in_array(strtolower($value),array('exp','or'))){
+        $value .= ' ';
+    }
+}
