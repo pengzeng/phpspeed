@@ -6,8 +6,8 @@ use library\database\redis;
 
 class db{
 
-    public static function table( $tname = ''){
-        return new mysql( $tname );
+    public static function table( $tname = '', $db = 'mysql'){
+        return new mysql( $tname , $db);
     }
 
     public static function redis( $db = '' ){

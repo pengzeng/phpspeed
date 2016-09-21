@@ -136,6 +136,8 @@ class kernel {
         if(is_array($objects->extract) && !empty($objects->extract))
             $_extract = $objects->extract;
         $action  = ACTION_NAME;
+        if(!method_exists($objects,$action))
+            throw new Exception('method not found !');
         $objects->$action();
         return true;
     }
