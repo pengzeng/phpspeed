@@ -65,6 +65,7 @@ if(isset($argv)) {
 // template data
 $_extract = [];
 
+
 // include kernel
 include(APP_PATH.'/library/kernel'.FILES_SUFFIX);
 

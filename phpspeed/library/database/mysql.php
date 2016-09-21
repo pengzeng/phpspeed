@@ -10,10 +10,12 @@ use PDO,PDOException,PDOStatement,Exception;
 
 class pdodriver {
 
-    public function _connect(){
+    static public function _connect( $conf_file_name ){
         static $pdo;
-        if( ! $pdo instanceof PDO){
-            $conf = config('mysql');
+        static $cname;
+        if( ! $pdo instanceof PDO || $cname != $conf_file_name){
+            $conf = config( $conf_file_name );
+            $cname = $conf_file_name;
             try{
                 $pdo = new PDO(
                     sprintf("%s:host=%s;prot=%s;dbname=%s;charset=%s",
@@ -28,14 +30,6 @@ class pdodriver {
         }
         return $pdo;
     }
-
-    public function _query( $sql ){
-        return $this->_connect()->query($sql);
-    }
-
-    public function _exec( $sql ){
-        return $this->_connect()->exec($sql);
-    }
 }
 
 class mysql{
@@ -45,8 +39,9 @@ class mysql{
     public  $table  = '';
     private $limit  = 100000;
     private $config = array();
-    public function __construct( $tname = '' ){
+    public function __construct( $tname = '' , $conf_file_name){
         $this->table = $tname;
+        $this->config = $conf_file_name;
     }
 
     /**
@@ -210,22 +205,18 @@ class mysql{
         $sql = 'SELECT ';
         $sql.= $this->param['field'] ? $this->param['field'] : '*';
         $sql.= ' FROM '.$this->table;
-        $sql.= $this->param['join']  ? ' '.$this->param['join']           : '';
-        if($this->param['group']){
-            $sql.= ' GROUP BY '.$this->param['group'];
-            $sql.= $this->param['having'] ? ' HAVING '.$this->param['having'] : '';
-        }else{
-            $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
-        }
+        $sql.= $this->param['join']  ? ' '.$this->param['join'] : '';
+        $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
+        $sql.= $this->param['group'] ? ' GROUP BY '.$this->param['group'] : '';
+        $sql.= $this->param['having'] ? ' HAVING '.$this->param['having'] : '';
         $sql.= $this->param['order'] ? ' ORDER BY '.$this->param['order'] : '';
         $sql.=' LIMIT 1';
         return $this->_query($sql)->fetch( PDO::FETCH_ASSOC );
     } // end func
 
     public function value( $f = false ){
-        $ret = $this->first();
-        if($f) return $ret[$f];
-
+        if(is_string($f)) return $this->first()[$f];
+        else return false;
     }
 
     /**
@@ -238,12 +229,9 @@ class mysql{
         $sql.= $this->param['field'] ? $this->param['field'] : '*';
         $sql.= ' FROM '.$this->table;
         $sql.= $this->param['join']  ? ' '.$this->param['join'] : '';
-        if($this->param['group']){
-            $sql.= ' GROUP BY '.$this->param['group'];
-            $sql.= $this->param['having'] ? ' HAVING '.$this->param['having'] : '';
-        }else{
-            $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
-        }
+        $sql.= $this->param['where'] ? ' WHERE '.$this->param['where'] : '';
+        $sql.= $this->param['group'] ? ' GROUP BY '.$this->param['group'] : '';
+        $sql.= $this->param['having'] ? ' HAVING '.$this->param['having'] : '';
         $sql.= $this->param['order'] ? ' ORDER BY '.$this->param['order'] : '';
         $sql.= $this->param['limit'] ? ' LIMIT '.$this->param['limit'] : ' LIMIT '.$this->limit;
         return $this->_query($sql)->fetchAll( PDO::FETCH_ASSOC );
@@ -334,20 +322,26 @@ class mysql{
     public function _query( $sql ){
         $this->sql = $sql;
         $this->param = [];
-        $driver = new pdodriver();
-        return $driver->_query($sql);
+        $result = $this->_connect()->query($sql);
+        $error  = $this->_connect()->errorInfo();
+        if(!($error[0] == '00000')) throw new Exception($error[1].':'.$error[2]);
+        return $result;
     }
 
     public function _exec( $sql ){
         $this->sql = $sql;
         $this->param = [];
-        $driver = new pdodriver();
-        return $driver->_query($sql);
+        $result = $this->_connect()->exec($sql);
+        $error  = $this->_connect()->errorInfo();
+        if(!($error[0] == '00000')){
+            dump($this->last_sql());
+            throw new Exception($error[1].':'.$error[2]);
+        }
+        return $result;
     }
 
     public function _connect(){
-        $driver = new pdodriver();
-        return $driver->_connect();
+        return pdodriver::_connect( $this->config );
     }
 
     /*
