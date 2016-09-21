@@ -10,14 +10,12 @@ use PDO,PDOException,PDOStatement,Exception;
 
 class pdodriver {
 
-    static public function _connect( $conf_file_name ){
+    static public function _connect( $confname ){
         static $pdo;
-        static $cname;
-        if( ! $pdo instanceof PDO || $cname != $conf_file_name){
-            $conf = config( $conf_file_name );
-            $cname = $conf_file_name;
+        if( ! $pdo[$confname] instanceof PDO){
+            $conf = config( $confname );
             try{
-                $pdo = new PDO(
+                $pdo[$confname] = new PDO(
                     sprintf("%s:host=%s;prot=%s;dbname=%s;charset=%s",
                         $conf['type'],$conf['host'],$conf['port'],
                         $conf['name'],$conf['charset']),
@@ -28,7 +26,7 @@ class pdodriver {
             }
 
         }
-        return $pdo;
+        return $pdo[$confname];
     }
 }
 
@@ -39,9 +37,9 @@ class mysql{
     public  $table  = '';
     private $limit  = 100000;
     private $config = array();
-    public function __construct( $tname = '' , $conf_file_name){
+    public function __construct( $tname = '' , $confname){
         $this->table = $tname;
-        $this->config = $conf_file_name;
+        $this->config = $confname;
     }
 
     /**
