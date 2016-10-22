@@ -16,7 +16,7 @@ class pdodriver {
             $conf = config( $confname );
             try{
                 $pdo[$confname] = new PDO(
-                    sprintf("%s:host=%s;prot=%s;dbname=%s;charset=%s",
+                    sprintf("%s:host=%s;port=%s;dbname=%s;charset=%s",
                         $conf['type'],$conf['host'],$conf['port'],
                         $conf['name'],$conf['charset']),
                     $conf['user'],
@@ -331,10 +331,7 @@ class mysql{
         $this->param = [];
         $result = $this->_connect()->exec($sql);
         $error  = $this->_connect()->errorInfo();
-        if(!($error[0] == '00000')){
-            dump($this->last_sql());
-            throw new Exception($error[1].':'.$error[2]);
-        }
+        if(!($error[0] == '00000')) throw new Exception($error[1].':'.$error[2]);
         return $result;
     }
 
